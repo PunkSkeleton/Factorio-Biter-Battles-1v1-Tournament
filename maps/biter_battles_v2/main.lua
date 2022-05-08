@@ -219,9 +219,10 @@ end
 local function on_tick()
 	local tick = game.tick
 	
-	if not global.match_running then 
-		global.freeze_players = true
-		Team_manager.freeze_players()
+	if not global.match_running then
+		-- disabled for training period
+		--global.freeze_players = true
+		--Team_manager.freeze_players()
 	end
 
 	Ai.reanimate_units()
