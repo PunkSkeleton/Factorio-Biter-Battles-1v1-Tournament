@@ -796,10 +796,6 @@ function Public.fill_starter_chests(surface)
 		global.packchest2N.insert({name=_item, count=_qty})
 		global.packchest2S.insert({name=_item, count=_qty})
 	end
-
-	--WE GIVE FREE TECHNO, now I've just left unused tech to decide what
-	game.forces["south"].technologies['worker-robots-speed-1'].researched=true
-
 	global.fill_starter_chests = false
 	global.starter_chests_are_filled = true
 end
