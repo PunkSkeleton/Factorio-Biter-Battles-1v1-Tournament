@@ -175,6 +175,7 @@ local function draw_manager_gui(player)
 	
 	if global.freeze_players then
 		button = t.add({
+			enabled = false,	--for tournament
 			type = "button",
 			name = "team_manager_freeze_players",
 			caption = "Unfreeze Players",
@@ -183,6 +184,7 @@ local function draw_manager_gui(player)
 		button.style.font_color = {r = 222, g = 22, b = 22}
 	else
 		button = t.add({
+			enabled = false,	--for tournament
 			type = "button",
 			name = "team_manager_freeze_players",
 			caption = "Freeze Players",
