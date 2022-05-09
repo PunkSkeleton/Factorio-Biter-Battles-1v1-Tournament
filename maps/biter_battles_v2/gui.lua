@@ -256,6 +256,12 @@ function Public.create_main_gui(player)
 		local b = t.add  { type = "sprite-button", name = "bb_view_players", caption = "Playerlist" }
 	end
 
+	--Tournament
+
+	if not is_spec then
+		t.add{type = "sprite-button", name = "ready", caption = "Ready"}
+		t.add{type = "sprite-button", name = "reroll", caption = "Reroll", enabled = false}
+	end
 
 	local b_width = is_spec and 97 or 86
 	-- 111 when prod_spy button will be there
@@ -346,7 +352,9 @@ function join_team(player, force_name, forced_join, auto_join)
 	player.teleport(pos)
 	player.force = game.forces[force_name]
 	player.character.destructible = true
-	game.permissions.get_group("Default").add_player(player)
+	if not global.match_running then
+		game.permissions.get_group("frozen").add_player(player)
+	end
 	if not forced_join then
 		local c = player.force.name
 		if global.tm_custom_name[player.force.name] then c = global.tm_custom_name[player.force.name] end
@@ -484,6 +492,17 @@ local function on_gui_click(event)
 	if name == "bb_view_players" then
 		global.bb_view_players[player.name] = true
 		Public.create_main_gui(player)
+	end
+	if name == "ready" then
+		game.print(player.name .. " is ready!", {0,250,0})
+		global.players_ready[player.force.name] = true
+		if global.training_mode then
+			global.match_running = true
+			return
+		end
+		if global.players_ready[Tables.enemy_team_of[player.force.name]] then
+			global.match_running = true
+		end
 	end
 end
 

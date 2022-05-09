@@ -67,6 +67,24 @@ function Public.initial_setup()
 	}
 	for _, d in pairs(defs) do p.set_allows_action(d, true) end
 
+	-- for freezing single players
+	p = game.permissions.create_group("frozen")
+	for action_name, _ in pairs(defines.input_action) do
+		p.set_allows_action(defines.input_action[action_name], false)
+	end
+	defs = {
+		defines.input_action.write_to_console,
+		defines.input_action.gui_click,
+		defines.input_action.gui_selection_state_changed,
+		defines.input_action.gui_checked_state_changed	,
+		defines.input_action.gui_elem_changed,
+		defines.input_action.gui_text_changed,
+		defines.input_action.gui_value_changed,
+		defines.input_action.edit_permission_group,
+	}	
+	for _, d in pairs(defs) do p.set_allows_action(d, true) end
+
+
 	global.gui_refresh_delay = 0
 	global.game_lobby_active = true
 	global.bb_debug = false
@@ -129,7 +147,7 @@ function Public.draw_structures()
 	Terrain.generate_additional_rocks(surface)
 	Terrain.generate_silo(surface)
 	Terrain.draw_spawn_circle(surface)
-	--Terrain.generate_spawn_goodies(surface)
+	Terrain.fill_starter_chests(surface)
 end
 
 function Public.tables()
@@ -214,12 +232,12 @@ function Public.tables()
 	global.reanim_chance = {}
 	
 	global.match_countdown = 9 --EVL time of the countdown in seconds before match starts (unpause will have a 3 seconds countdown)
-
+	global.players_ready = {["north"] = false, ["south"] = false}	--for tournament
+	global.freeze_players = true 	--tournament, just to freeze biters before the start. Doesn't affect players
 	fifo.init()
 
 	global.next_attack = "north"
 	if math.random(1,2) == 1 then global.next_attack = "south" end
-	global.starter_chests_are_filled = false
 end
 
 function Public.load_spawn()

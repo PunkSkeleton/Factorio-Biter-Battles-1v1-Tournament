@@ -333,7 +333,7 @@ function Public.share_chat(event)
 		game.forces.spectator.print(msg, color)
 	end
 
-	if global.tournament_mode and not player.admin then return end
+	if global.tournament_mode then return end
 
 	--Skip messages that would spoil coordinates from spectators and don't send gps coord to discord
 	local a, b = string_find(event.message, "gps=", 1, false)

@@ -236,11 +236,6 @@ local function on_tick()
 		if tick % 18000 == 0 and not(global.bb_game_won_by_team) then 
 			clear_corpses_auto(500)
 		end
-		if not(global.starter_chests_are_filled) then
-			local surface = game.surfaces[global.bb_surface_name]
-			Terrain.fill_starter_chests(surface)
-			global.starter_chests_are_filled = true
-		end
 	end
 
 	if (tick+5) % 180 == 0 then
@@ -253,7 +248,6 @@ local function on_tick()
 		if global.bb_game_won_by_team then
 			Game_over.reveal_map()
 			global.match_running = false
-            global.starter_chests_are_filled = false
 			Game_over.server_restart()
 			return
 		end
@@ -274,9 +268,14 @@ local function on_tick()
 				if player.gui.center["bbc_cdf"] then	player.gui.center["bbc_cdf"].destroy() end
 			end
 			-- EVL SET global.next_attack = "north" / "south" and global.main_attack_wave_amount=0 --DEBUG--
-			global.freeze_players = false
-			Team_manager.unfreeze_players()
-
+			
+			--tournament unfreeze
+			for k, v in pairs({"north", "south"}) do
+				for _, p in pairs(game.forces[v].players) do
+					game.permissions.get_group("Default").add_player(p)
+				end
+			end
+			global.freeze_players = false 	--unfreeze biters
 			--game.tick_paused=false --EVL Not that easy (see team_manager.lua)
 			game.speed=1 --EVL back to normal speed
 			game.print(">>>>> Players & Biters have been unfrozen !", {r = 255, g = 77, b = 77})

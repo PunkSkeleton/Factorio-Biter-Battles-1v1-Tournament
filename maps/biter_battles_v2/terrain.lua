@@ -797,7 +797,6 @@ function Public.fill_starter_chests(surface)
 		global.packchest2S.insert({name=_item, count=_qty})
 	end
 	global.fill_starter_chests = false
-	global.starter_chests_are_filled = true
 end
 
 return Public
