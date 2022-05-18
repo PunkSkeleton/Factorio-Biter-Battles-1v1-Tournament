@@ -33,7 +33,7 @@ Public.food_values = {
 	["firearm-magazine"] =		{value = 0.0009, name = "yellow ammo", color = "255, 50, 50"},
 
 	["stone-wall"] =		{value = 0.0018, name = "wall", color = "50, 255, 50"},
-	["piercing-rounds-magazine"] =		{value = 0.0045, name = "red ammo", color = "105, 105, 105"},
+	["piercing-rounds-magazine"] =		{value = 0.0052, name = "red ammo", color = "105, 105, 105"},
 	["gate"] = 		{value = 0.0100, name = "gates", color = "100, 200, 255"},
 	["gun-turret"] =		{value = 0.0150, name = "gun turret", color = "150, 25, 255"},
 	["defender-capsule"] =		{value = 0.0406, name = "capsule bot", color = "210, 210, 60"},
