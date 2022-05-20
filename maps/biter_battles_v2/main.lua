@@ -279,6 +279,7 @@ local function on_tick()
 			--game.tick_paused=false --EVL Not that easy (see team_manager.lua)
 			game.speed=1 --EVL back to normal speed
 			game.print(">>>>> Players & Biters have been unfrozen !", {r = 255, g = 77, b = 77})
+			game.reset_time_played()	--reset clock
 		end
 	end
 end
