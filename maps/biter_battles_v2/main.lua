@@ -282,6 +282,14 @@ local function on_tick()
 			game.reset_time_played()	--reset clock
 		end
 	end
+	
+	-- tournament map charting before match starting
+	if tick % 600 == 0 and not global.match_running and game.ticks_played < 1200 then
+		for k, v in pairs({"north", "south", "spectator"}) do
+            game.forces[v].chart(global.bb_surface_name, {{-127, -127}, {127, 127}})
+        end
+		log("Charting")
+	end
 end
 
 local function on_marked_for_deconstruction(event)
