@@ -66,7 +66,12 @@ local function create_first_join_gui(player)
 	b.style.font = "heading-2"
 	b.style.font_color = {r=0.98, g=0.66, b=0.22}
 	clock(frame)
-	local d = frame.add{type = "sprite-button", name = "join_random_button", caption = "AUTO JOIN"}
+	local d
+	if player.admin then
+		d = frame.add{type = "sprite-button", name = "force_start", caption = "FORCE MATCH START"}
+	else
+		d = frame.add{type = "sprite-button", name = "join_random_button", caption = "AUTO JOIN"}
+	end
 	d.style.font = "default-large-bold"
 	d.style.font_color = { r=1, g=0, b=1}
 	d.style.width = 350
@@ -259,7 +264,7 @@ function Public.create_main_gui(player)
 	--Tournament
 
 	if not is_spec then
-		t.add{type = "sprite-button", name = "ready", caption = "Ready"}
+		t.add{type = "sprite-button", name = "ready", caption = "Ready", enabled = not global.match_running}
 		t.add{type = "sprite-button", name = "reroll", caption = "Reroll", enabled = false}
 	end
 
@@ -503,6 +508,9 @@ local function on_gui_click(event)
 		if global.players_ready[Tables.enemy_team_of[player.force.name]] then
 			global.match_running = true
 		end
+	end
+	if name == "force_start" then
+		global.match_running = true
 	end
 end
 

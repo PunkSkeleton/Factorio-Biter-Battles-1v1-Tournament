@@ -382,7 +382,7 @@ commands.add_command(
     'Opens a players inventory!',
     function(cmd)
         local player = game.player
-
+        if player.force.name == "south" or player.force.name == "north" then return end
         if validate_player(player) then
             if not cmd.parameter then
                 return

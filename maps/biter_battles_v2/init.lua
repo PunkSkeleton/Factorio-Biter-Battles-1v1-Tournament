@@ -42,7 +42,9 @@ function Public.initial_setup()
 		defines.input_action.activate_copy,
 		defines.input_action.activate_cut,
 		defines.input_action.activate_paste,
+		defines.input_action.admin_action,
 		defines.input_action.change_active_quick_bar,
+		defines.input_action.change_multiplayer_config,
 		defines.input_action.clear_cursor,
 		defines.input_action.edit_permission_group,
 		defines.input_action.gui_click,
@@ -64,6 +66,9 @@ function Public.initial_setup()
 		defines.input_action.start_walking,
 		defines.input_action.toggle_show_entity_info,
 		defines.input_action.write_to_console,
+		defines.input_action.map_editor_action,
+		defines.input_action.toggle_map_editor
+
 	}
 	for _, d in pairs(defs) do p.set_allows_action(d, true) end
 
@@ -265,6 +270,8 @@ function Public.load_spawn()
 		surface.request_to_generate_chunks({x = -48, y = y * -1 - 16}, 0)
 		surface.request_to_generate_chunks({x = -80, y = y * -1 - 16}, 0)
 	end
+
+	
 end
 
 function Public.forces()
