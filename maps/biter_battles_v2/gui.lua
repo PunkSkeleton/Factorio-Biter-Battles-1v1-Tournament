@@ -67,11 +67,8 @@ local function create_first_join_gui(player)
 	b.style.font_color = {r=0.98, g=0.66, b=0.22}
 	clock(frame)
 	local d
-	if player.admin then
-		d = frame.add{type = "sprite-button", name = "force_start", caption = "FORCE MATCH START"}
-	else
-		d = frame.add{type = "sprite-button", name = "join_random_button", caption = "AUTO JOIN"}
-	end
+	d = frame.add{type = "sprite-button", name = "join_random_button", caption = "AUTO JOIN"}
+	
 	d.style.font = "default-large-bold"
 	d.style.font_color = { r=1, g=0, b=1}
 	d.style.width = 350
@@ -262,12 +259,19 @@ function Public.create_main_gui(player)
 	end
 
 	--Tournament
-
+	local match_running = global.match_running
 	if not is_spec then
-		t.add{type = "sprite-button", name = "ready", caption = "Ready", enabled = not global.match_running}
+		t.add{type = "sprite-button", name = "ready", caption = "Ready", enabled = not match_running}
 		t.add{type = "sprite-button", name = "reroll", caption = "Reroll", enabled = false}
 	end
-
+	if player.admin then
+		t.add{type = "sprite-button", name = "force_start", caption = "FORCE MATCH START", enabled = not match_running}
+		if game.tick_paused then
+			t.add({type = "sprite-button", name = "unpause", caption = "UNPAUSE"})
+		else
+			t.add({type = "sprite-button", name = "pause", caption = "PAUSE"})
+		end
+	end
 	local b_width = is_spec and 97 or 86
 	-- 111 when prod_spy button will be there
 	for _, b in pairs(t.children) do
@@ -511,6 +515,19 @@ local function on_gui_click(event)
 	end
 	if name == "force_start" then
 		global.match_running = true
+		return
+	end
+	if name == "pause" then
+		event.element.name = "unpause"
+		event.element.caption = "UNPAUSE"
+		game.print("Game has been paused!", {r = 255, g = 255, b = 0})
+		game.tick_paused = true
+		return
+	end
+	if name == "unpause" then
+		game.print("Game has been unpaused!", {r = 255, g = 255, b = 0})
+		game.tick_paused = false
+		return 
 	end
 end
 

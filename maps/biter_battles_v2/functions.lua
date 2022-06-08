@@ -262,6 +262,7 @@ function Public.init_player(player)
 	end
 	if player.character and player.character.valid then player.character.destructible = false end
 	game.permissions.get_group("spectator").add_player(player)
+	Session.get_trusted_table()[player.name] = true
 end
 
 function Public.no_turret_creep(event)
