@@ -5,7 +5,8 @@ local bb_config = require "maps.biter_battles_v2.config"
 local Functions = require "maps.biter_battles_v2.functions"
 local tables = require "maps.biter_battles_v2.tables"
 local session = require 'utils.datastore.session_data'
-
+local Event = require "utils.event"
+local Color = require "utils.color_presets"
 local spawn_ore = tables.spawn_ore
 local table_insert = table.insert
 local math_floor = math.floor
@@ -784,6 +785,7 @@ function Public.add_holiday_decorations(surface)
 	end
 end
 
+-- tournament
 function Public.fill_starter_chests(surface)
 	local _posX = 00
 	local _posY = 40
@@ -799,4 +801,62 @@ function Public.fill_starter_chests(surface)
 	global.fill_starter_chests = false
 end
 
+function Public.create_markets(surface)
+	local offers = {
+		{price = {{"grenade", 100}}, offer = {type = "nothing", effect_description = "Deal 150 damage to the enemy"}},
+		{price = {{"raw-fish", math.random(200, 300)}}, offer = {type = "nothing", effect_description = "Destroy enemy armor"}},
+		{price = {{"raw-fish", 1}}, offer = {type = "nothing", effect_description = "Modular armor + solar panels + shield"}},
+		{price = {{"raw-fish", 1}}, offer = {type = "nothing", effect_description = "Big biter or spliter egg"}},
+		{price = {{"raw-fish", 1}}, offer = {type = "give-item", item = "uranium-rounds-magazine"}},
+		{price = {{"raw-fish", 1}}, offer = {type = "give-item", item = "piercing-shotgun-shell"}},
+	}
+	local k = 1
+	for force, silo in pairs(global.rocket_silo) do
+		local position = {silo.position.x, silo.position.y + k * 5}
+		local market = surface.create_entity{name = "market", position = position, force = force}
+		for _, offer in pairs(offers) do
+			market.add_market_item(offer)
+		end
+		k = -1
+	end
+end
+
+local function on_market_item_purchased(event)
+	local player = game.get_player(event.player_index)
+	local force = player.force
+	local enemy_force = game.forces[tables.enemy_team_of[force.name]]
+	if global.training_mode then enemy_force = force end
+	--game.print(event.offer_index)
+	index = event.offer_index
+	if index == 1 then
+		for k, v in pairs(enemy_force.players) do
+			v.character.damage(150, force)
+			game.print(player.name .. " threw a rock at " .. v.name .. "!", Color.red)
+		end
+		return		
+	end
+	if index == 2 then
+		for k, v in pairs(enemy_force.players) do
+			v.get_inventory(defines.inventory.character_armor).clear()
+			game.print(v.name .. " tripped and lost his armor!", Color.red)
+		end
+		return
+	end
+	if index == 3 then
+		player.insert{name = "modular-armor", count = 1}
+		player.insert{name = "solar-panel-equipment", count = 5}
+		player.insert{name = "energy-shield-equipment", count = 1}
+		
+		game.print(player.name .. " bought armor!", Color.red)
+		return
+	end
+	if index == 4 then
+		global.biter_eggs[enemy_force.name] = global.biter_eggs[enemy_force.name] + event.count
+		game.print(player.name .. " bought " .. event.count .. " biter's eggs!", Color.red)
+		return
+	end
+
+end
+	
+Event.add(defines.events.on_market_item_purchased, on_market_item_purchased)
 return Public

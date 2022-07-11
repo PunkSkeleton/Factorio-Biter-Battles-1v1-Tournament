@@ -1,6 +1,7 @@
 local bb_config = require "maps.biter_battles_v2.config"
 local Functions = require "maps.biter_battles_v2.functions"
 local Server = require 'utils.server'
+local Color = require "utils.color_presets"
 
 local tables = require "maps.biter_battles_v2.tables"
 local food_values = tables.food_values
@@ -206,11 +207,15 @@ function set_evo_and_threat(flask_amount, food, biter_force_name)
 end
 
 local function feed_biters(player, food)	
-		if game.ticks_played < global.difficulty_votes_timeout then
+	local ticks_played = game.ticks_played
+	if ticks_played < global.difficulty_votes_timeout then
 		player.print("Please wait for voting to finish before feeding")
 		return
 	end
-
+	if ticks_played < global.feeding_timeout then
+		player.print("Please wait " .. math.round((global.feeding_timeout - ticks_played)/60) .. " seconds", Color.red)
+		return
+	end
 	local enemy_force_name = get_enemy_team_of(player.force.name)  ---------------
 	--enemy_force_name = player.force.name
 	

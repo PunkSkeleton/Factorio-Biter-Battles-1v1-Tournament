@@ -153,6 +153,7 @@ function Public.draw_structures()
 	Terrain.generate_silo(surface)
 	Terrain.draw_spawn_circle(surface)
 	Terrain.fill_starter_chests(surface)
+	Terrain.create_markets(surface)
 end
 
 function Public.tables()
@@ -203,7 +204,7 @@ function Public.tables()
 	global.difficulty_vote_index = 4
 
 	global.difficulty_votes_timeout = 0 -- no difficulty vote at all
-
+	global.feeding_timeout = 4 * 60 * 60
 	-- A FIFO that holds dead unit positions. It is used by unit
 	-- reanimation logic. This container is to be accessed by force index.
 	global.dead_units = {}
@@ -239,6 +240,7 @@ function Public.tables()
 	global.match_countdown = 9 --EVL time of the countdown in seconds before match starts (unpause will have a 3 seconds countdown)
 	global.players_ready = {["north"] = false, ["south"] = false}	--for tournament
 	global.freeze_players = true 	--tournament, just to freeze biters before the start. Doesn't affect players
+	global.biter_eggs = {["north"] = 0, ["south"] = 0}
 	fifo.init()
 
 	global.next_attack = "north"

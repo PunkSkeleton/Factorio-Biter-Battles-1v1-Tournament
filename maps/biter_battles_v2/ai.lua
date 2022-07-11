@@ -149,6 +149,22 @@ local function select_units_around_spawner(spawner, force_name, side_target)
 	local max_unit_count = math.floor(global.bb_threat[biter_force_name] * 0.25) + math_random(6,12)
 	if max_unit_count > bb_config.max_group_size then max_unit_count = bb_config.max_group_size end
 
+	-- tournament biter eggs
+	if global.biter_eggs[force_name] > 0 then
+		--log("hatching eggs")
+		for k = global.biter_eggs[force_name], 1, -1 do
+			local unit_names = {"big-biter", "big-spitter"}
+			local unit_name = unit_names[math.random(2)]
+			local position = spawner.surface.find_non_colliding_position(unit_name, spawner.position, 128, 2)
+			local biter = spawner.surface.create_entity({name = unit_name , force = biter_force_name, position = position})
+			threat = threat - threat_values[unit_name]
+			i = i + 1
+			valid_biters[i] = biter
+			unit_count = unit_count + 1
+			if unit_count >= (max_unit_count / 2) then break end
+		end
+		global.biter_eggs[force_name] = global.biter_eggs[force_name] - unit_count
+	end
 	--Collect biters around spawners
 	if math_random(1, 2) == 1 then
 		local biters = spawner.surface.find_enemy_units(spawner.position, 96, force_name)
