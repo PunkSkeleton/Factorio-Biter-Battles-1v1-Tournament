@@ -812,8 +812,10 @@ function Public.create_markets(surface)
 	}
 	local k = 1
 	for force, silo in pairs(global.rocket_silo) do
-		local position = {silo.position.x, silo.position.y + k * 5}
+		local position = {silo.position.x, silo.position.y + k * 6}
 		local market = surface.create_entity{name = "market", position = position, force = force}
+		market.destructible = false
+		market.minable = false
 		for _, offer in pairs(offers) do
 			market.add_market_item(offer)
 		end
