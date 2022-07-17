@@ -154,6 +154,9 @@ function Public.draw_structures()
 	Terrain.draw_spawn_circle(surface)
 	Terrain.fill_starter_chests(surface)
 	Terrain.create_markets(surface)
+	if math.random(100) <= 20 then
+		Terrain.draw_oil(surface)
+	end
 end
 
 function Public.tables()
