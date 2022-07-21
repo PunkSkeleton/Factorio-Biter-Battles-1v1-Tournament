@@ -30,15 +30,13 @@ Public.upgrade_modifiers = {
 }
 
 Public.food_values = {
-	["firearm-magazine"] =		{value = 0.0009, name = "yellow ammo", color = "255, 50, 50"},
-
-
-	["piercing-rounds-magazine"] =		{value = 0.0052, name = "red ammo", color = "105, 105, 105"},
-	["stone-wall"] =		{value = 0.0015, name = "wall", color = "50, 255, 50"},
-	["gate"] = 		{value = 0.0100, name = "gates", color = "100, 200, 255"},
-	["gun-turret"] =		{value = 0.0140, name = "gun turret", color = "150, 25, 255"},
-	["defender-capsule"] =		{value = 0.0406, name = "capsule bot", color = "210, 210, 60"},
-	["flamethrower-ammo"] = 		{value = 0.1022, name = "flamer ammo", color = "255, 255, 255"},
+	["firearm-magazine"] =		{value = 0.0005, name = "yellow ammo", color = "255, 50, 50"},
+	["piercing-rounds-magazine"] =		{value = 0.0042, name = "red ammo", color = "105, 105, 105"},
+	["stone-wall"] =		{value = 0.0013, name = "wall", color = "50, 255, 50"},
+	["gate"] = 		{value = 0.0110, name = "gates", color = "100, 200, 255"},
+	["gun-turret"] =		{value = 0.0120, name = "gun turret", color = "150, 25, 255"},
+	["defender-capsule"] =		{value = 0.0440, name = "capsule bot", color = "210, 210, 60"},
+	["flamethrower-ammo"] = 		{value = 0.0750, name = "flamer ammo", color = "255, 255, 255"},
 }
 
 Public.gui_foods = {}
@@ -113,25 +111,25 @@ Public.spawn_ore = {
 	-- patches of given type. The "density" is applied with the same rule
 	-- regardless of the patch size.
 	["iron-ore"] = {
-		size = 15,
+		size = 15 + 3.75,
 		density = 3500,
 		big_patches = 2,
 		small_patches = 0
 	},
 	["copper-ore"] = {
-		size = 13,
+		size = 13 + 3.25,
 		density = 3000,
 		big_patches = 2,
 		small_patches = 0
 	},
 	["coal"] = {
-		size = 13,
+		size = 13 + 3.25,
 		density = 2500,
 		big_patches = 1,
 		small_patches = 0
 	},
 	["stone"] = {
-		size = 11,
+		size = 11 + 2.75,
 		density = 2000,
 		big_patches = 2,
 		small_patches = 0

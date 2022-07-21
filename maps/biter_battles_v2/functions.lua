@@ -461,6 +461,12 @@ end
 local function on_research_finished(event)
 	if event.research.name == "flamethrower" then
 		event.research.force.recipes["flamethrower-turret"].enabled = false
+		return
+	end
+	if event.research.name == "military-3" then
+		event.research.force.recipes["poison-capsule"].enabled = false
+		event.research.force.recipes["slowdown-capsule"].enabled = false
+		return
 	end
 end
 

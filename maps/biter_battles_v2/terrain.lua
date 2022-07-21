@@ -5,7 +5,8 @@ local bb_config = require "maps.biter_battles_v2.config"
 local Functions = require "maps.biter_battles_v2.functions"
 local tables = require "maps.biter_battles_v2.tables"
 local session = require 'utils.datastore.session_data'
-
+local Event = require "utils.event"
+local Color = require "utils.color_presets"
 local spawn_ore = tables.spawn_ore
 local table_insert = table.insert
 local math_floor = math.floor
@@ -784,6 +785,7 @@ function Public.add_holiday_decorations(surface)
 	end
 end
 
+-- tournament
 function Public.fill_starter_chests(surface)
 	local _posX = 00
 	local _posY = 40
@@ -799,4 +801,94 @@ function Public.fill_starter_chests(surface)
 	global.fill_starter_chests = false
 end
 
+function Public.create_markets(surface)
+	local offers = {
+		{price = {{"grenade", 100}}, offer = {type = "nothing", effect_description = "Deal 150 damage to the enemy"}},
+		{price = {{"raw-fish", math.random(200, 300)}}, offer = {type = "nothing", effect_description = "Destroy enemy armor"}},
+		{price = {{"heavy-armor", 5}}, offer = {type = "nothing", effect_description = "Modular armor + solar panels + shield"}},
+		{price = {{"shotgun-shell", 10}}, offer = {type = "nothing", effect_description = "Big biter or spliter egg"}},
+		{price = {{"piercing-rounds-magazine", 100}}, offer = {type = "nothing", effect_description = "20 [item=uranium-rounds-magazine]"}},
+		{price = {{"shotgun-shell", 30}}, offer = {type = "nothing", effect_description = "5 [item=piercing-shotgun-shell]"}},
+	}
+	local k = 1
+	for force, silo in pairs(global.rocket_silo) do
+		local position = {silo.position.x, silo.position.y + k * 6}
+		local market = surface.create_entity{name = "market", position = position, force = force}
+		market.destructible = false
+		market.minable = false
+		for _, offer in pairs(offers) do
+			market.add_market_item(offer)
+		end
+		k = -1
+	end
+end
+
+local function on_market_item_purchased(event)
+	local player = game.get_player(event.player_index)
+	local force = player.force
+	local enemy_force = game.forces[tables.enemy_team_of[force.name]]
+	if global.training_mode then enemy_force = force end
+	local market = event.market
+	game.print(event.offer_index)
+	local index = event.offer_index
+	local offers = market.get_market_items()
+
+	if event.count > 1 then
+		local change = {name = offers[index].price[1].name, count = offers[index].price[1].amount * (event.count - 1)}
+		player.insert(change)
+		player.print("Only one purchase at the time is available")
+	end
+
+	if index == 1 then
+		for k, v in pairs(enemy_force.players) do
+			v.character.damage(150, force)
+			game.print(player.name .. " threw a rock at " .. v.name .. "!", Color.red)		
+		end
+		
+		offers[index].price = {{"rocket-part", 100}}
+	elseif index == 2 then
+		for k, v in pairs(enemy_force.players) do
+			v.get_inventory(defines.inventory.character_armor).clear()
+			game.print(v.name .. " tripped and lost his armor!", Color.red)
+		end
+		offers[index].price = {{"rocket-part", 100}}
+
+	elseif index == 3 then
+		player.insert{name = "modular-armor", count = 1}
+		player.insert{name = "solar-panel-equipment", count = 5}
+		player.insert{name = "energy-shield-equipment", count = 1}		
+		--game.print(player.name .. " bought armor!", Color.red)
+		offers[index].price = {{"rocket-part", 100}}
+
+	elseif index == 4 then
+		global.biter_eggs[enemy_force.name] = global.biter_eggs[enemy_force.name] + event.count
+		game.print(player.name .. " bought " .. event.count .. " biter's eggs!", Color.red)
+		offers[index].price[1].amount = offers[index].price[1].amount * 2
+
+	elseif index == 5 then
+		player.insert{name = "uranium-rounds-magazine", count = 20}
+		offers[index].price[1].amount = offers[index].price[1].amount * 2
+	
+	elseif index == 6 then
+		player.insert{name = "piercing-shotgun-shell", count = 5}
+		offers[index].price[1].amount = offers[index].price[1].amount * 2
+	end
+
+	market.clear_market_items()
+	for k, offer in pairs(offers) do
+		market.add_market_item(offer)
+	end
+end
+
+function Public.draw_oil(surface)
+	local x = math_random(-116, 116)
+	local y = math_random(40, 116)
+	local pos = surface.find_non_colliding_position("crude-oil", {x, y}, 10, 1)
+	surface.create_entity{name = "crude-oil", position = pos, amount = 151000}
+	pos = {pos.x, -pos.y}
+	surface.create_entity{name = "crude-oil", position = pos, amount = 151000}
+	--game.print("OIL!") -- [gps=" .. pos.x .. "," .. pos.y .. "]")
+end
+
+Event.add(defines.events.on_market_item_purchased, on_market_item_purchased)
 return Public
